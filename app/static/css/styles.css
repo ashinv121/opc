@@ -1,0 +1,99 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    margin: 20px;
+}
+
+#server-status {
+    margin-bottom: 20px;
+}
+
+#toggle-server-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #28a745; /* Green for start */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#toggle-server-button.stop {
+    background-color: #dc3545; /* Red for stop */
+}
+
+#device-container {
+    margin-top: 20px;
+}
+
+.device-form {
+    background-color: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.device-form h3 {
+    margin-top: 0;
+}
+
+.device-form label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.device-form input,
+.device-form select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.device-form button {
+    padding: 10px 15px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.remove-device-button {
+    background-color: #dc3545; /* Red */
+    color: #fff;
+}
+
+.save-device-button {
+    background-color: #28a745; /* Green */
+    color: #fff;
+}
+
+/* Styles for Device Tree */
+#device-tree {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#device-tree ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#device-tree li {
+    margin: 10px 0;
+}
+
+#device-tree li strong {
+    font-size: 1.1em;
+}

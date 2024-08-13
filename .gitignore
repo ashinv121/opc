@@ -1,0 +1,3 @@
+myenv/
+# Ignore Python bytecode files
+*.pyc
