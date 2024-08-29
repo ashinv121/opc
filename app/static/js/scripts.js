@@ -96,9 +96,8 @@ addButton.addEventListener('click', function() {
                 // Remove the form
                 deviceForm.remove();
                 addButton.disabled = false;
+                window.location.reload();
 
-                // Add device to the tree
-                addDeviceToTree(formData);
             } else {
                 alert('Error adding device: ' + data.message);
             }

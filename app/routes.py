@@ -1,6 +1,6 @@
 import threading
 import time
-from flask import Blueprint, render_template, jsonify, request
+from flask import Blueprint, render_template, jsonify, request, redirect, url_for
 from app.modbus.client import ModbusClient
 from .opcua_main.opcua_server import OPCUAServer
 
@@ -19,14 +19,13 @@ def update_tag_values():
                 device['client'].connect()
                 for tag in device['tags']:
                     value = device['client'].read_holding_registers(address=0, count=1)
-                    #print(value)
                     opcua_server.write_value(tag['name'], value)
                 device['client'].close()
-        time.sleep(5)  # Adjust the sleep time as needed to control the update frequency
+        time.sleep(5)
 
 @app_routes.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', devices=devices)
 
 @app_routes.route('/add_device', methods=['POST'])
 def add_device():
@@ -43,7 +42,7 @@ def add_device():
     if protocol == 'modbus':
         client = ModbusClient(config['ip'], config['port'])
         opcua_server.add_object(device_name)
-        devices.append({'name': device_name, 'protocol': protocol, 'client': client})
+        devices.append({'name': device_name, 'protocol': protocol, 'ip': config['ip'], 'port': config['port'],'client': client})
     else:
         return jsonify({"status": "error", "message": "Invalid protocol"}), 400
     
@@ -66,7 +65,6 @@ def add_tag(device_name):
     if not device:
         return jsonify({'status': 'error', 'message': f'Device {device_name} not found'}), 404
     
-    # Add the tag to the device (assuming each device has a 'tags' list)
     if 'tags' not in device:
         device['tags'] = []
     
@@ -158,3 +156,26 @@ def put_tag_value(tag_name):
 
     return jsonify({'status': 'error', 'message': f'Tag {tag_name} not found in any device'}), 404
 
+@app_routes.route('/device/<device_name>/edit_tags', methods=['GET', 'POST'])
+def edit_tags(device_name):
+    device = next((device for device in devices if device['name'] == device_name), None)
+
+    if not device:
+        return jsonify({'status': 'error', 'message': f'Device {device_name} not found'}), 404
+
+    if request.method == 'POST':
+        new_tag_name = request.form.get('new_tag_name')
+        new_tag_value = request.form.get('new_tag_value')
+        
+        # Check for duplicate tags or add new ones
+        for tag in device.get('tags', []):
+            if tag['name'] == new_tag_name:
+                tag['value'] = new_tag_value
+                break
+        else:
+            if new_tag_name:
+                device.setdefault('tags', []).append({'name': new_tag_name, 'value': new_tag_value})
+        
+        return redirect(url_for('app_routes.edit_tags', device_name=device_name))
+
+    return render_template('edit_tags.html', device=device)
